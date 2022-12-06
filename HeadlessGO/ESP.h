@@ -18,5 +18,6 @@ private:
 	static void DrawCrosshair(int width, int length, int offset, ImU32 color, float rounding = 0.f, bool outline = false, ImU32 outlineColor = 0, float outlineThickness = 1.f);
 	static void DrawOrigin(IClientEntity* CurrentEnt, ImU32 color);
 	static void DrawName(IClientEntity* CurrentEnt);
+	static void DrawAimbotFOV(int FOV);
 	static DWORD WINAPI PlayerDrawThread(LPVOID param);
 };

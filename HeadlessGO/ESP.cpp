@@ -31,6 +31,9 @@ void ESP::Render()
 			DrawName(currentEntity);
 	}
 
+	if (Menu::bAimbot)
+		DrawAimbotFOV(Menu::vAimbotFOV);
+
 	// Draw croshair last so it's always on top.
 	if (Menu::bCrosshair)
 		DrawCrosshair(
@@ -206,4 +209,12 @@ void ESP::Render()
 		}
 	}
 
+	void ESP::DrawAimbotFOV(int FOV) {
+		int w, h;
+		SourceInterfaces::pEngine->GetScreenSize(w, h);
+
+		float x = w / 2.f, y = h / 2.f;
+
+		Drawing::Circle(x, y, FOV*15, Menu::ToColor(&Menu::cCrosshair));
+	}
 #pragma endregion

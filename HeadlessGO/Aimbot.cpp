@@ -3,6 +3,12 @@
 #pragma region Function Declarations
 
     bool __fastcall CreateMoveFn(void* ecx, void* edx, float SampleTime, CUserCmd* cmd);
+    float ease(float x);
+    float easeInOutBack(float x);
+    float easeOutBounce(float x);
+    float easeOutQuart(float x);
+    float easeInOutExpo(float x);
+    float easeInOutSine(float x);
 
 #pragma endregion
 
@@ -55,12 +61,82 @@ Aimbot::~Aimbot()
                 if (target)
                 {
                     QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPos, targetPos);
-                    cmd->m_viewangles.x = aimAngle.x;
-                    cmd->m_viewangles.y = aimAngle.y;
+                    QAngle diffs = aimAngle - QAngle{ cmd->m_viewangles.x, cmd->m_viewangles.y, cmd->m_viewangles.z };
+                    float diff_x = diffs.x, diff_y = diffs.y;
+                    if (diff_x < 0) diff_x *= -1;
+                    if (diff_y < 0) diff_y *= -1;
+                    float dist = diff_x + diff_y;
+
+                    if (dist <= Menu::vAimbotFOV) {
+                        float norm_dist = SDK_Utilities::Math::NormalizeValue(0, Menu::vAimbotFOV, dist);
+                        // Ease
+                        float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
+
+                        std::cout << "Smoothing: " << smooth << std::endl;
+
+                        cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1));
+                        cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1));
+                    }
                 }
             }
         }
         return true;
     }
 
+    float ease(float x) {
+        return easeInOutSine(x);
+    }
+
+    float easeInOutBack(float x) {
+        float c1 = 1.70158f;
+        float c2 = c1 * 1.525f;
+
+        if (x < 0.5) {
+            return (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2;
+        }
+        else {
+            return (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+        }
+    }
+    
+    float easeOutBounce(float x) {
+        float n1 = 7.5625f;
+        float d1 = 2.75f;
+
+        if (x < 1.f / d1) {
+            return n1 * x * x;
+        }
+        else if (x < 2.f / d1) {
+            return n1 * (x -= 1.5f / d1) * x + 0.75f;
+        }
+        else if (x < 2.5f / d1) {
+            return n1 * (x -= 2.25f / d1) * x + 0.9375f;
+        }
+        else {
+            return n1 * (x -= 2.625f / d1) * x + 0.984375f;
+        }
+    }
+
+    float easeOutQuart(float x) {
+        return 1 - pow(1 - x, 4);
+    }
+
+    float easeInOutExpo(float x) {
+        if (x == 0) {
+            return 0;
+        }
+        else if (x == 1) {
+            return 1;
+        }
+        else if (x < 0.5f) {
+            return pow(2, 20 * x - 10) / 2;
+        }
+        else {
+            return (2 - pow(2, -20 * x + 10)) / 2;
+        }
+    }
+
+    float easeInOutSine(float x) {
+        return -(cos(3.1415926535897932384626433832795 * x) - 1) / 2;
+    }
 #pragma endregion

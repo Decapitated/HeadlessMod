@@ -333,5 +333,12 @@ namespace SDK_Utilities
 
 			return Vector(cos(radx) * cos(rady), cos(radx) * sin(rady), sin(radx));
 		}
+		float NormalizeValue(float min, float max, float value)
+		{
+			float normalized = (value - min) / (max - min);
+			if (normalized < 0) return 0;
+			if (normalized > 1) return 1;
+			return normalized;
+		}
 	}
 }

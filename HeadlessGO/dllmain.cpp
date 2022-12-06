@@ -9,25 +9,20 @@
 
 #pragma region Function Declarations
 
-DWORD WINAPI MainThread(LPVOID param);
+DWORD WINAPI MainThread(HMODULE hModule);
 
 #pragma endregion
-
-HMODULE hModule; // DLL hModule.
-DWORD main_thread_id;
 
 BOOL APIENTRY DllMain( HMODULE _hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
 {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH)
     {
-        hModule = _hModule;
-        DisableThreadLibraryCalls(hModule);
-        CreateThread(nullptr, 0, MainThread, nullptr, 0, &main_thread_id);
+        CloseHandle(CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, _hModule, 0, nullptr));
     }
     return TRUE;
 }
 
-DWORD WINAPI MainThread(LPVOID param)
+DWORD WINAPI MainThread(HMODULE hModule)
 {
     #pragma region Console Setup
 
@@ -84,6 +79,7 @@ DWORD WINAPI MainThread(LPVOID param)
 
         // Cleanup dll for uninjection.
         FreeLibraryAndExitThread(hModule, 0);
+        return 0;
 
     #pragma endregion
 }

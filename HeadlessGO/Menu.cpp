@@ -1,7 +1,7 @@
 #include "Menu.h"
 
-const float Menu::MAX_SIZE{ 1000.f };
-const float Menu::MIN_SIZE{ 1.f };
+const float Menu::MAX_SIZE_FLOAT{ 1000.f };
+const float Menu::MIN_SIZE_FLOAT{ 1.f };
 
 #pragma region Feature Toggle Defaults
 
@@ -43,6 +43,9 @@ const float Menu::MIN_SIZE{ 1.f };
 	float Menu::vCrosshairRounding{ 0.f };
 	float Menu::vCrosshairOutlineThickness{ 1.f };
 
+	int Menu::vAimbotSmoothing{ 10 };
+	int Menu::vAimbotFOV{ 10 };
+
 #pragma endregion
 
 void Menu::Render()
@@ -80,10 +83,10 @@ void Menu::Render()
 						ImGui::Text("Main Color"); ImGui::SameLine();
 						ImGui::ColorEdit4("Crosshair Main Color", (float*)&cCrosshair, colorPickerFlags);
 
-						ImGui::SliderScalar("Width", ImGuiDataType_Float, &vCrosshairWidth, &MIN_SIZE, &MAX_SIZE);
-						ImGui::SliderScalar("Height", ImGuiDataType_Float, &vCrosshairHeight, &MIN_SIZE, &MAX_SIZE);
-						ImGui::SliderScalar("Offset", ImGuiDataType_Float, &vCrosshairOffset, &MIN_SIZE, &MAX_SIZE);
-						ImGui::SliderScalar("Rounding", ImGuiDataType_Float, &vCrosshairRounding, &MIN_SIZE, &MAX_SIZE);
+						ImGui::SliderScalar("Width", ImGuiDataType_Float, &vCrosshairWidth, &MIN_SIZE_FLOAT, &MAX_SIZE_FLOAT);
+						ImGui::SliderScalar("Height", ImGuiDataType_Float, &vCrosshairHeight, &MIN_SIZE_FLOAT, &MAX_SIZE_FLOAT);
+						ImGui::SliderScalar("Offset", ImGuiDataType_Float, &vCrosshairOffset, &MIN_SIZE_FLOAT, &MAX_SIZE_FLOAT);
+						ImGui::SliderScalar("Rounding", ImGuiDataType_Float, &vCrosshairRounding, &MIN_SIZE_FLOAT, &MAX_SIZE_FLOAT);
 
 						if (bCrosshairOutline)
 						{
@@ -95,7 +98,7 @@ void Menu::Render()
 								ImGui::Text("Outline Color"); ImGui::SameLine();
 								ImGui::ColorEdit4("Crosshair Outline Color", (float*)&cCrosshairOutline, colorPickerFlags);
 
-								ImGui::SliderScalar("Thickness", ImGuiDataType_Float, &vCrosshairOutlineThickness, &MIN_SIZE, &MAX_SIZE);
+								ImGui::SliderScalar("Thickness", ImGuiDataType_Float, &vCrosshairOutlineThickness, &MIN_SIZE_FLOAT, &MAX_SIZE_FLOAT);
 
 								// Tree end.
 								ImGui::TreePop();
@@ -187,7 +190,28 @@ void Menu::Render()
 			ImGui::Checkbox("Show NPC", &bShowNPC);
 			ImGui::Checkbox("View Players", &bViewPlayers);
 			ImGui::Checkbox("View Visible Players", &bViewVisiblePlayers);
-			ImGui::Checkbox("Aimbot", &bAimbot);
+			#pragma region Aimbot
+
+				if (bAimbot)
+				{
+					if (ImGui::TreeNode("Aimbot"))
+					{
+						ImGui::Checkbox("Enable/Disable", &bAimbot);
+						// Aimbot Smoothing.
+						ImGui::SliderInt("Smoothing", &vAimbotSmoothing, 1, 50);
+						// Aimbot FOV.
+						ImGui::SliderInt("FOV", &vAimbotFOV, 1, 50);
+
+						// Tree end.
+						ImGui::TreePop();
+					}
+				}
+				else
+				{
+					ImGui::Checkbox("Aimbot", &bAimbot);
+				}
+
+			#pragma endregion
 		} ImGui::End();
 	}
 

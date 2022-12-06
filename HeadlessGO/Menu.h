@@ -7,8 +7,8 @@ class Menu
 public:
 	static void Render();
 
-	static const float MIN_SIZE;
-	static const float MAX_SIZE;
+	static const float MIN_SIZE_FLOAT;
+	static const float MAX_SIZE_FLOAT;
 
 	#pragma region Feature Toggles
 
@@ -48,6 +48,9 @@ public:
 		static float vCrosshairHeight;
 		static float vCrosshairRounding;
 		static float vCrosshairOutlineThickness;
+
+		static int vAimbotSmoothing;
+		static int vAimbotFOV;
 
 	#pragma endregion
 

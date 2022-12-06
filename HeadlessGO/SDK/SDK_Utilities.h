@@ -293,5 +293,6 @@ namespace SDK_Utilities {
         QAngle GetAngle(Vector source, Vector target);
         float DEG2RAD(float degrees);
         Vector Forward(QAngle ang);
+        float NormalizeValue(float min, float max, float value);
     }
 };
