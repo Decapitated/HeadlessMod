@@ -70,9 +70,8 @@ Aimbot::~Aimbot()
                     if (dist <= Menu::vAimbotFOV) {
                         float norm_dist = SDK_Utilities::Math::NormalizeValue(0, Menu::vAimbotFOV, dist);
                         // Ease
-                        float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
-
-                        std::cout << "Smoothing: " << smooth << std::endl;
+                        //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
+                        float smooth = Menu::vAimbotSmoothing;
 
                         cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1));
                         cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1));

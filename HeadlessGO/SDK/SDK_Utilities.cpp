@@ -101,12 +101,14 @@ IClientEntity* SDK_Utilities::GrabClosestEntToCrosshair(Vector &outTargetPos)
 		Vector targetScreen;
 		if (SDKMath::WorldToScreen(targetPos, targetScreen))
 		{
-			float distToCross = crosshair.Dist(targetScreen);
-			if (distToCross < targetDist)
-			{
-				target = currentEntity;
-				targetDist = distToCross;
-				outTargetPos = targetPos;
+			if (GetVisible(currentEntity)) {
+				float distToCross = crosshair.Dist(targetScreen);
+				if (distToCross < targetDist)
+				{
+					target = currentEntity;
+					targetDist = distToCross;
+					outTargetPos = targetPos;
+				}
 			}
 		}
 	}
@@ -222,8 +224,9 @@ bool SDK_Utilities::GetVisible(IClientEntity* ent)
 	int localHead = GrabBone(localPlayer, getBoneArray()[13]);
 	Vector localPos = (localHead == -1 ? localPlayer->GetOrigin() : GetBonePos(localPlayer, localHead));
 
-	int targetHead = SDK_Utilities::GrabBone(ent, getBoneArray()[13]);
-	Vector targetPos = (targetHead == -1 ? ent->GetOrigin() : GetBonePos(ent, targetHead));
+	int target = SDK_Utilities::GrabBone(ent, getBoneArray()[13]);
+	if (target == -1) target = SDK_Utilities::GrabBone(ent, getBoneArray()[0]);
+	Vector targetPos = (target == -1 ? ent->GetOrigin() : GetBonePos(ent, target));
 
 	trace_t trace;
 	CTraceFilter filter(localPlayer);
