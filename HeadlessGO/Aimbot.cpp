@@ -1,4 +1,6 @@
 #include "Aimbot.h"
+using Hack::Aimbot;
+using Hack::Menu;
 
 #pragma region Function Declarations
 

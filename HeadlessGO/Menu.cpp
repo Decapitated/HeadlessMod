@@ -1,4 +1,5 @@
 #include "Menu.h"
+using Hack::Menu;
 
 const float Menu::MAX_SIZE_FLOAT{ 1000.f };
 const float Menu::MIN_SIZE_FLOAT{ 1.f };

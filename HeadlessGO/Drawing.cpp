@@ -1,5 +1,7 @@
 #include "Drawing.h"
-
+using Hack::Drawing;
+using Hack::Menu;
+using Hack::ESP;
 #pragma region Function Declarations
 
 	HRESULT _stdcall Hooked_EndScene(IDirect3DDevice9* pDevice);
@@ -10,10 +12,11 @@
 
 #pragma region Static Variables
 
-	HWND Drawing::processWindow{};
+	HWND    Drawing::processWindow{};
 	WNDPROC Drawing::originalWndProc{};
 	ImFont* Drawing::defaultFont{};
-	HHOOK Drawing::hMouseHook{};
+	HHOOK   Drawing::hMouseHook{};
+	ImDrawList* Drawing::drawList{};
 
 #pragma endregion
 
@@ -163,6 +166,8 @@ bool Drawing::GetD3D9Device(void** vTable, size_t size, HWND window)
 
 		ImGui::NewFrame();
 
+		Drawing::drawList = ImGui::GetBackgroundDrawList();
+
 		#pragma region Draw Here
 
 			if (SourceInterfaces::pEngine->IsInGame() &&
@@ -228,31 +233,36 @@ bool Drawing::GetD3D9Device(void** vTable, size_t size, HWND window)
 
 	void Drawing::Line(float x1, float y1, float x2, float y2, ImU32 color, float thickness)
 	{
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), color, thickness);
 	}
 
 	void Drawing::Circle(float x, float y, float radius, ImU32 color, int segments, float thickness)
 	{
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddCircle(ImVec2(x, y), radius, color, segments, thickness);
 	}
 
 	void Drawing::Box(float x, float y, float w, float h, ImU32 color, float thickness, float rounding)
 	{
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddRect(ImVec2(x, y), ImVec2(x + w, y + h), color, rounding, 0, thickness);
 	}
 
 	void Drawing::BoxFilled(float x, float y, float w, float h, ImU32 color, float rounding)
 	{
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), color, rounding);
 	}
 
 	void Drawing::OutlinedFilledBox(float x, float y, float w, float h, ImU32 color, ImU32 outlineColor, float outlineThickness, float rounding)
 	{
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), color, rounding);
 		draw->AddRect(ImVec2(x, y), ImVec2(x + w, y + h), outlineColor, rounding, 0, outlineThickness);
 	}
@@ -260,7 +270,8 @@ bool Drawing::GetD3D9Device(void** vTable, size_t size, HWND window)
 	void Drawing::Text(char* text, float x, float y, ImU32 color)
 	{
 		int length = strlen(text);
-		auto draw = ImGui::GetBackgroundDrawList();
+		//auto draw = ImGui::GetBackgroundDrawList();
+		auto draw = Drawing::drawList;
 		draw->AddText(Drawing::defaultFont, 0, ImVec2(x, y), color, text, NULL, NULL, NULL);
 	}
 

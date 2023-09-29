@@ -78,6 +78,9 @@
     <ClCompile Include="Aimbot.cpp">
       <Filter>Source Files\Hack</Filter>
     </ClCompile>
+    <ClCompile Include="GameData.cpp">
+      <Filter>Source Files\Hack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MinHook\MinHook.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Aimbot.h">
+      <Filter>Header Files\Hack</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
       <Filter>Header Files\Hack</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,12 +10,14 @@
 
 #include "Menu.h"
 
-class Aimbot
-{
-public:
-	Aimbot();
-	~Aimbot();
+namespace Hack {
+	class Aimbot
+	{
+	public:
+		Aimbot();
+		~Aimbot();
 
-private:
-	void* vt_clientShared[22];
-};
+	private:
+		void* vt_clientShared[22];
+	};
+}

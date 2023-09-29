@@ -1,4 +1,5 @@
 #include "ESP.h"
+using Hack::ESP;
 #include <vector>
 
 void ESP::Render()
@@ -101,6 +102,7 @@ void ESP::Render()
 
 	void ESP::DrawSkeleton(IClientEntity* CurrentEnt, ImU32 boneColor, ImU32 headColor)
 	{
+		/*
 		//Right Leg
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[21], SDK_Utilities::getBoneArray()[20], boneColor); // R Toe -> R Foot
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[20], SDK_Utilities::getBoneArray()[19], boneColor); // R Foot -> R Calf
@@ -122,14 +124,12 @@ void ESP::Render()
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[7], SDK_Utilities::getBoneArray()[6], boneColor); // L Hand -> L Forearm
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[6], SDK_Utilities::getBoneArray()[5], boneColor); // L Forearm -> L Upperarm
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[5], SDK_Utilities::getBoneArray()[3], boneColor); // L Upperarm -> Spine 2
-		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[5], SDK_Utilities::getBoneArray()[13], boneColor); // L Upperarm -> Head
+		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[5], SDK_Utilities::getBoneArray()[13], boneColor); // L Upperarm -> Head*/
 		//Head
 		DrawHead(CurrentEnt, headColor);
 	}
 
-	void ESP::DrawCrosshair(
-		int width, int length, int offset, ImU32 color, float rounding,
-		bool outline, ImU32 outlineColor, float outlineThickness)
+	void ESP::DrawCrosshair(int width, int length, int offset, ImU32 color, float rounding, bool outline, ImU32 outlineColor, float outlineThickness)
 	{
 		int w, h;
 		SourceInterfaces::pEngine->GetScreenSize(w, h);

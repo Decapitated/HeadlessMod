@@ -3,7 +3,9 @@
 // Windows Header Files
 #include <windows.h>
 #include <iostream> // For console output.
+#include <unordered_map>
 
+#include "GameData.h"
 #include "Drawing.h"
 #include "Aimbot.h"
 
@@ -42,24 +44,36 @@ DWORD WINAPI MainThread(HMODULE hModule)
         // Initialize interfaces with GetInterface().
         if (CreateInterface::GetInstance().Intitialize())
         {
-            Drawing* draw = new Drawing(L"Garry's Mod"); // Initialize Menu and ESP.
-            Aimbot* aimbot = new Aimbot();               // Initialize Aimbot.
+            auto gamedata = make_unique<Hack::GameData>();              // Initialize GameData loop.
+            auto draw     = make_unique<Hack::Drawing>(L"Garry's Mod"); // Initialize Menu and ESP.
+            auto aimbot   = make_unique<Hack::Aimbot>();                // Initialize Aimbot.
 
             while (true)
             {
                 // End loop.
                 if (GetAsyncKeyState(VK_INSERT))
                     break;
+                
+                auto data = gamedata->GetData();
+                if (data.localPlayerIndex != -1 && !data.players.empty())
+                {
+                    auto localPlayer = data.players[data.localPlayerIndex];
+                    std::cout << "LocalPlayer(" << data.localPlayerIndex << "): " << localPlayer.Name << std::endl;
+
+                    for (const auto& p : data.players)
+                    {
+                        auto index = p.first; auto player = p.second;
+                        if (index == data.localPlayerIndex) continue;
+                        std::cout << "Player(" << index << "): " << player.Name << std::endl;
+                    }
+                }
 
                 // Open menu.
                 if (GetAsyncKeyState(VK_HOME) & 0x11)
-                    Menu::bMenu = !Menu::bMenu;
+                    Hack::Menu::bMenu = !Hack::Menu::bMenu;
 
                 Sleep(100); // Sleep since we don't do much in this thread.
             }
-
-            delete draw;   // Clean up drawing.
-            delete aimbot; // Clean up aimbot.
         }
     }
     catch (char* e)

@@ -1,14 +1,14 @@
 #pragma once
 #include "imgui.h"
 #include "Drawing.h"
+namespace Hack {
+	class Menu
+	{
+	public:
+		static void Render();
 
-class Menu
-{
-public:
-	static void Render();
-
-	static const float MIN_SIZE_FLOAT;
-	static const float MAX_SIZE_FLOAT;
+		static const float MIN_SIZE_FLOAT;
+		static const float MAX_SIZE_FLOAT;
 
 	#pragma region Feature Toggles
 
@@ -54,15 +54,16 @@ public:
 
 	#pragma endregion
 
-	static ImU32 ToColor(ImVec4* color)
-	{
-		return IM_COL32(color->x * 255, color->y * 255, color->z * 255, color->w * 255);
-	}
+		static ImU32 ToColor(ImVec4* color)
+		{
+			return IM_COL32(color->x * 255, color->y * 255, color->z * 255, color->w * 255);
+		}
 
-private:
-	static const ImGuiColorEditFlags colorPickerFlags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview;
-	
-	static void MainWindow();
-	static void PlayersWindow();
-	static void VisiblePlayersWindow();
-};
+	private:
+		static const ImGuiColorEditFlags colorPickerFlags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview;
+
+		static void MainWindow();
+		static void PlayersWindow();
+		static void VisiblePlayersWindow();
+	};
+}
