@@ -6,23 +6,24 @@
 
 namespace Hack {
 	struct Player {
-		int EntityIndex;
-		char* Name;
+		int entityIndex = -1;
+		string name;
 	};
 
 	struct GData {
 		int localPlayerIndex = -1;
 		std::unordered_map<int, Player> players{};
+		int closestToCrosshair = -1;
+		Vector targetPos;
 	};
 
 	class GameData {
 	private:
 		bool shouldStop = false;
 		HANDLE dataThreadHandle;
-		GData data;
 
 	public:
-
+		static GData* data;
 		GameData();
 		~GameData();
 
@@ -32,14 +33,6 @@ namespace Hack {
 
 		bool ShouldStop() {
 			return shouldStop;
-		}
-		
-		void SetData(GData* newData) {
-			data = *newData;
-		}
-
-		GData GetData() {
-			return data;
 		}
 
 		static char* GetName(int entityIndex);

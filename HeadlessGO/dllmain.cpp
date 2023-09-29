@@ -53,20 +53,6 @@ DWORD WINAPI MainThread(HMODULE hModule)
                 // End loop.
                 if (GetAsyncKeyState(VK_INSERT))
                     break;
-                
-                auto data = gamedata->GetData();
-                if (data.localPlayerIndex != -1 && !data.players.empty())
-                {
-                    auto localPlayer = data.players[data.localPlayerIndex];
-                    std::cout << "LocalPlayer(" << data.localPlayerIndex << "): " << localPlayer.Name << std::endl;
-
-                    for (const auto& p : data.players)
-                    {
-                        auto index = p.first; auto player = p.second;
-                        if (index == data.localPlayerIndex) continue;
-                        std::cout << "Player(" << index << "): " << player.Name << std::endl;
-                    }
-                }
 
                 // Open menu.
                 if (GetAsyncKeyState(VK_HOME) & 0x11)

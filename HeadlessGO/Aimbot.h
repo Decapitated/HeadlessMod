@@ -9,6 +9,7 @@
 #endif
 
 #include "Menu.h"
+#include "GameData.h"
 
 namespace Hack {
 	class Aimbot

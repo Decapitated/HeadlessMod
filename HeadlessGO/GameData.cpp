@@ -4,6 +4,8 @@ using Hack::Menu;
 
 DWORD WINAPI DataThread(GameData* gameData);
 
+Hack::GData* GameData::data{};
+
 GameData::GameData() {
 	dataThreadHandle = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)DataThread, this, 0, nullptr);
 }
@@ -24,9 +26,7 @@ char* GameData::GetName(int entityIndex)
 DWORD WINAPI DataThread(GameData* gameData) {
 	while (!gameData->ShouldStop())
 	{
-		std::cout << "Getting data." << std::endl;
-
-		Hack::GData tempData{ SourceInterfaces::pEngine->GetLocalPlayer(), {} };
+		Hack::GData tempData{ SourceInterfaces::pEngine->GetLocalPlayer() };
 		int maxEntities = SourceInterfaces::pEntityList->GetHighestEntityIndex();
 		for (int i = 0; i <= maxEntities; i++)
 		{
@@ -42,8 +42,18 @@ DWORD WINAPI DataThread(GameData* gameData) {
 
 			tempData.players.insert({i, tempPlayer});
 		}
-		gameData->SetData(&tempData);
-		Sleep(2000); // Sleep since we don't do much in this thread.
+		Vector targetPos;
+		IClientEntity* target = SDK_Utilities::GrabClosestEntToCrosshair(targetPos);
+		if (target)
+		{
+			tempData.closestToCrosshair = target->entindex();
+			tempData.targetPos = targetPos;
+		}
+		else {
+			tempData.closestToCrosshair = -1;
+		}
+		GameData::data = &tempData;
+		//Sleep(2000); // Sleep since we don't do much in this thread.
 	}
 	std::cout << "End Data Thread." << std::endl;
 	return 0;
