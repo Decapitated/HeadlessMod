@@ -3,18 +3,23 @@
 #include <unordered_map>
 #include "SDK/SDK_Utilities.h"
 #include "Menu.h"
+#include <mutex>
 
 namespace Hack {
 	struct Player {
 		int entityIndex = -1;
 		string name;
+		Vector originPos;
+		bool hasHead = false;
+		Vector headPos;
+		float distToCrosshair;
 	};
-
+	typedef std::unordered_map<int, Player> PlayerList;
 	struct GData {
+		RECT screenSize;
 		int localPlayerIndex = -1;
-		std::unordered_map<int, Player> players{};
+		shared_ptr<PlayerList> players;
 		int closestToCrosshair = -1;
-		Vector targetPos;
 	};
 
 	class GameData {
@@ -23,7 +28,8 @@ namespace Hack {
 		HANDLE dataThreadHandle;
 
 	public:
-		static GData* data;
+		static std::mutex dataMutex;
+		static shared_ptr<GData> data;
 		GameData();
 		~GameData();
 
@@ -35,7 +41,8 @@ namespace Hack {
 			return shouldStop;
 		}
 
-		static char* GetName(int entityIndex);
-
+		static Player GetPlayer(int entityIndex);
+		static string GetName(int entityIndex);
+		static float GetDistanceToCrosshair(IClientEntity* target, Vector targetPos);
 	};
 }

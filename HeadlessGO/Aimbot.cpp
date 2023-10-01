@@ -55,15 +55,14 @@ Aimbot::~Aimbot()
             // Mouse side buttons.
             if (GetAsyncKeyState(VK_XBUTTON1) || GetAsyncKeyState(VK_XBUTTON2))
             {
-                IClientEntity* localPlayer = SDK_Utilities::GetLocalPlayer();
-                int localHead = SDK_Utilities::GrabBone(localPlayer, SDK_Utilities::getBoneArray()[13]);
-                Vector localPos = (localHead == -1 ? localPlayer->GetOrigin() : SDK_Utilities::GetBonePos(localPlayer, localHead));
+                const std::lock_guard<std::mutex> lock(GameData::dataMutex);
+                shared_ptr<Hack::GData> data = GameData::data;
 
-                /*Vector targetPos;
-                IClientEntity* target = SDK_Utilities::GrabClosestEntToCrosshair(targetPos);
-                if (target)
-                {
-                    QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPos, targetPos);
+                Hack::Player localPlayer = data->players->at(data->localPlayerIndex);
+
+                if (data->closestToCrosshair != -1) {
+                    Hack::Player targetPlayer = data->players->at(data->closestToCrosshair);
+                    QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPlayer.headPos, targetPlayer.headPos);
                     QAngle diffs = aimAngle - QAngle{ cmd->m_viewangles.x, cmd->m_viewangles.y, cmd->m_viewangles.z };
                     float diff_x = diffs.x, diff_y = diffs.y;
                     if (diff_x < 0) diff_x *= -1;
@@ -76,27 +75,8 @@ Aimbot::~Aimbot()
                         //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
                         float smooth = Menu::vAimbotSmoothing;
 
-                        cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1));
-                        cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1));
-                    }
-                }*/
-                Hack::GData data = *GameData::data;
-                if (data.closestToCrosshair != -1) {
-                    QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPos, data.targetPos);
-                    QAngle diffs = aimAngle - QAngle{ cmd->m_viewangles.x, cmd->m_viewangles.y, cmd->m_viewangles.z };
-                    float diff_x = diffs.x, diff_y = diffs.y;
-                    if (diff_x < 0) diff_x *= -1;
-                    if (diff_y < 0) diff_y *= -1;
-                    float dist = diff_x + diff_y;
-
-                    if (dist <= Menu::vAimbotFOV) {
-                        float norm_dist = SDK_Utilities::Math::NormalizeValue(0, Menu::vAimbotFOV, dist);
-                        // Ease
-                        //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
-                        float smooth = Menu::vAimbotSmoothing;
-
-                        cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1));
-                        cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1));
+                        cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1.0f));
+                        cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1.0f));
                     }
                 }
             }
