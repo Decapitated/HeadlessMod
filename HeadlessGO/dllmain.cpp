@@ -44,17 +44,9 @@ DWORD WINAPI MainThread(HMODULE hModule)
         // Initialize interfaces with GetInterface().
         if (CreateInterface::GetInstance().Intitialize())
         {
-            auto gamedata = make_unique<Hack::GameData>();              // Initialize GameData loop.
-            // Initialize Menu and ESP.
-            auto draw = make_unique<Hack::Drawing>(
-            #if _WIN64
-                L"Garry's Mod (x64)"
-            #else
-                L"Garry's Mod"
-            #endif
-            );
-            
-            auto aimbot   = make_unique<Hack::Aimbot>();                // Initialize Aimbot.
+            auto gamedata = std::make_unique<Hack::GameData>();          // Initialize GameData loop.
+            auto draw = std::make_unique<Hack::Drawing>(L"Garry's Mod"); // Initialize Menu and ESP.
+            auto aimbot = std::make_unique<Hack::Aimbot>();              // Initialize Aimbot.
 
             while (true)
             {

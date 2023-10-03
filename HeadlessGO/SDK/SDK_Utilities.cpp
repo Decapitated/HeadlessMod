@@ -218,6 +218,7 @@ void SDK_Utilities::TraceRay(Vector start, Vector end, trace_t &trace, CTraceFil
 	SourceInterfaces::pEngineTrace->TraceRay(ray, MASK_SOLID, filter, &trace);
 }
 
+// ALERT: Make this function use gamedata.
 bool SDK_Utilities::GetVisible(IClientEntity* ent)
 {
 	IClientEntity* localPlayer = GetLocalPlayer();

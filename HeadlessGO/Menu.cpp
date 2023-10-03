@@ -54,6 +54,7 @@ void Menu::Render()
 	MainWindow();
 
 	// Stuff only to be shown when player is in-game.
+	// Update this to use gamedata.
 	if (SourceInterfaces::pEngine->IsInGame() &&
 		SourceInterfaces::pEngine->IsConnected() &&
 		!SourceInterfaces::pEngine->IsDrawingLoadingImage())

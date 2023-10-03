@@ -1,9 +1,12 @@
 #include "ESP.h"
 using Hack::ESP;
-#include <vector>
+using Hack::GameData;
+using Hack::Menu;
+using Hack::Drawing;
 
 void ESP::Render()
 {
+	/*
 	int maxEntities = SourceInterfaces::pEntityList->GetHighestEntityIndex();
 	IClientEntity* localEntity = SDK_Utilities::GetLocalPlayer();
 	for (int i = 0; i <= maxEntities; i++)
@@ -20,6 +23,7 @@ void ESP::Render()
 			continue;
 
 		if (Menu::bSnapline)
+			// #Use origin from game data.
 			DrawSnapline(currentEntity, Menu::ToColor(&Menu::cSnapline));
 
 		if (Menu::bSkeleton)
@@ -30,6 +34,22 @@ void ESP::Render()
 
 		if (Menu::bName)
 			DrawName(currentEntity);
+
+	}
+	*/
+	std::shared_ptr<Hack::GData> data;
+	{
+		const std::lock_guard<std::mutex> lock(GameData::dataMutex);
+		data = GameData::data;
+	}
+	if (data)
+	{
+		Hack::Player localPlayer = data->players.at(data->localPlayerIndex);
+
+		for (auto& player : data->players)
+		{
+			ESP::DrawSkeleton(&player.second, localPlayer.headPos, Menu::ToColor(&Menu::cSkeletonBody), Menu::ToColor(&Menu::cSkeletonHead));
+		}
 	}
 
 	if (Menu::bAimbot)
@@ -66,7 +86,7 @@ void ESP::Render()
 
 	void ESP::DrawHead(IClientEntity* CurrentEnt, ImU32 color)
 	{
-		string head = SDK_Utilities::getBoneArray()[13];
+		std::string head = SDK_Utilities::getBoneArray()[13];
 		int boneIndex = SDK_Utilities::GrabBone(CurrentEnt, head.c_str());
 		if (boneIndex != -1)
 		{
@@ -84,7 +104,18 @@ void ESP::Render()
 		}
 	}
 
-	void ESP::DrawSegment(IClientEntity* CurrentEnt, string bone_1, string bone_2, ImU32 color)
+	void ESP::DrawHead(Vector headPos, Vector localHeadPos, ImU32 color)
+	{
+		Vector w_bonePos;
+		if (SDKMath::WorldToScreen(headPos, w_bonePos))
+		{
+			float distance = SDKMath::GetDistanceBetween(localHeadPos, headPos);
+			float offset = 3000.0 / distance;
+			Drawing::Box(w_bonePos.x - offset, w_bonePos.y - offset, offset * 2, offset * 2, color, 2.f);
+		}
+	}
+
+	void ESP::DrawSegment(IClientEntity* CurrentEnt, std::string bone_1, std::string bone_2, ImU32 color)
 	{
 		int bone_a = SDK_Utilities::GrabBone(CurrentEnt, bone_1.c_str());
 		int bone_b = SDK_Utilities::GrabBone(CurrentEnt, bone_2.c_str());
@@ -95,9 +126,14 @@ void ESP::Render()
 			Vector w_bonePos_a, w_bonePos_b;
 			if (SDKMath::WorldToScreen(bonePos_a, w_bonePos_a) && SDKMath::WorldToScreen(bonePos_b, w_bonePos_b))
 			{
-				Drawing::Line(w_bonePos_a.x, w_bonePos_a.y, w_bonePos_b.x, w_bonePos_b.y, color, 2.f);
+				ESP::DrawSegment(w_bonePos_a, w_bonePos_b, color);
 			}
 		}
+	}
+
+	void ESP::DrawSegment(Vector a, Vector b, ImU32 color)
+	{
+		Drawing::Line(a.x, a.y, b.x, b.y, color, 2.f);
 	}
 
 	void ESP::DrawSkeleton(IClientEntity* CurrentEnt, ImU32 boneColor, ImU32 headColor)
@@ -127,6 +163,14 @@ void ESP::Render()
 		DrawSegment(CurrentEnt, SDK_Utilities::getBoneArray()[5], SDK_Utilities::getBoneArray()[13], boneColor); // L Upperarm -> Head*/
 		//Head
 		DrawHead(CurrentEnt, headColor);
+	}
+
+	void ESP::DrawSkeleton(Hack::Player* player, Vector localHeadPos, ImU32 boneColor, ImU32 headColor)
+	{
+		for (const std::shared_ptr<Vector[]> segment : player->segments) {
+			ESP::DrawSegment(segment[0], segment[1], boneColor);
+		}
+		ESP::DrawHead(player->headPos, localHeadPos, headColor);
 	}
 
 	void ESP::DrawCrosshair(int width, int length, int offset, ImU32 color, float rounding, bool outline, ImU32 outlineColor, float outlineThickness)

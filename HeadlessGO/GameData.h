@@ -1,24 +1,28 @@
 #pragma once
 #include <iostream> // For console output.
 #include <unordered_map>
+#include <mutex>
+#include <vector>
+#include <string>
 #include "SDK/SDK_Utilities.h"
 #include "Menu.h"
-#include <mutex>
 
 namespace Hack {
 	struct Player {
 		int entityIndex = -1;
-		string name;
+		int team = -1;
+		std::string name;
 		Vector originPos;
 		bool hasHead = false;
 		Vector headPos;
-		float distToCrosshair;
+		std::vector<std::shared_ptr<Vector[]>> segments;
+		float distToCrosshair = -1;
 	};
 	typedef std::unordered_map<int, Player> PlayerList;
 	struct GData {
 		RECT screenSize;
 		int localPlayerIndex = -1;
-		shared_ptr<PlayerList> players;
+		PlayerList players;
 		int closestToCrosshair = -1;
 	};
 
@@ -29,7 +33,7 @@ namespace Hack {
 
 	public:
 		static std::mutex dataMutex;
-		static shared_ptr<GData> data;
+		static std::shared_ptr<GData> data;
 		GameData();
 		~GameData();
 
@@ -42,7 +46,9 @@ namespace Hack {
 		}
 
 		static Player GetPlayer(int entityIndex);
-		static string GetName(int entityIndex);
+		static std::string GetName(int entityIndex);
+		static std::shared_ptr<Vector[]> GetSegment(IClientEntity* target, std::string bone_1, std::string bone_2);
+		static std::vector<std::shared_ptr<Vector[]>> GetSegments(IClientEntity* target);
 		static float GetDistanceToCrosshair(IClientEntity* target, Vector targetPos);
 	};
 }
