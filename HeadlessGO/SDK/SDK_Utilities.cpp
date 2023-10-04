@@ -320,13 +320,13 @@ namespace SDK_Utilities
 		{
 			Vector normalized = target - source;
 			QAngle angle;
-			angle.x = (-atan2f(normalized.z, sqrtf(powf(normalized.y, 2) + powf(normalized.x, 2))) * (180.0f / PI)); // pitch
-			angle.y = (atan2f(normalized.y, normalized.x)) * (180.0f / PI); // yaw
+			angle.x = (float)(-atan2f(normalized.z, sqrtf(powf(normalized.y, 2) + powf(normalized.x, 2))) * (180.0f / PI)); // pitch
+			angle.y = (float)(atan2f(normalized.y, normalized.x)) * (180.0f / PI); // yaw
 			return angle;
 		}
 		float DEG2RAD(float degrees)
 		{
-			return degrees * 4.0 * atan(1.0) / 180.0;
+			return degrees * 4.0f * atan(1.0f) / 180.0f;
 		}
 		Vector Forward(QAngle ang)
 		{

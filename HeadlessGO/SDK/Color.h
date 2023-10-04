@@ -8,7 +8,7 @@ namespace Colors
 		// constructors
 		Color()
 		{
-			*((int*)this) = 0;
+			SetColor(0, 0, 0, 0);
 		}
 		Color(int _r, int _g, int _b)
 		{

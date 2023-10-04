@@ -42,7 +42,7 @@ DWORD WINAPI MainThread(HMODULE hModule)
             throw "Failed to initialize MinHook";
 
         // Initialize interfaces with GetInterface().
-        if (CreateInterface::GetInstance().Intitialize())
+        if (CreateInterface().Intitialize())
         {
             auto gamedata = make_unique<Hack::GameData>();              // Initialize GameData loop.
             // Initialize Menu and ESP.

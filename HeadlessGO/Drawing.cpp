@@ -1,7 +1,8 @@
 #include "Drawing.h"
 using Hack::Drawing;
-using Hack::Menu;
 using Hack::ESP;
+using Hack::Menu;
+
 #pragma region Function Declarations
 
 	HRESULT _stdcall Hooked_EndScene(IDirect3DDevice9* pDevice);

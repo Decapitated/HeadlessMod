@@ -19,10 +19,6 @@ private:
 		return inter;
 	}
 public:
-	static CreateInterface& GetInstance() {
-		CreateInterface temp;
-		return temp;
-	}
 	bool Intitialize();
 };
 

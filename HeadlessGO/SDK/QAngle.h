@@ -312,9 +312,9 @@ inline QAngle QAngle::Clamp()
 
 inline QAngle QAngle::Mod(float N)
 {
-	this->x = fmod(x, N);
-	this->y = fmod(y, N);
-	this->z = fmod(z, N);
+	this->x = (float)fmod(x, N);
+	this->y = (float)fmod(y, N);
+	this->z = (float)fmod(z, N);
 
 	return *this;
 }

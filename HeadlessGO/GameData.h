@@ -5,6 +5,8 @@
 #include "Menu.h"
 #include <mutex>
 
+using namespace std;
+
 namespace Hack {
 	struct Player {
 		int entityIndex = -1;
@@ -42,7 +44,9 @@ namespace Hack {
 		}
 
 		static Player GetPlayer(int entityIndex);
+
 		static string GetName(int entityIndex);
+
 		static float GetDistanceToCrosshair(IClientEntity* target, Vector targetPos);
 	};
 }

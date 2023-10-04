@@ -19,13 +19,13 @@ public:
 		Difference = EnemyPlayerOrigin - LocalPlayerOrigin;
 
 
-		float magnitude = sqrt(pow(Difference.x, 2) + pow(Difference.y, 2) + pow(Difference.z, 2));
+		float magnitude = (float)sqrt(pow(Difference.x, 2) + pow(Difference.y, 2) + pow(Difference.z, 2));
 
 		Vector AngleToAim;
 
-		AngleToAim.y = atan2f(Difference.y, Difference.x) * 180 / 3.14;
+		AngleToAim.y = atan2f(Difference.y, Difference.x) * 180.f / 3.14f;
 
-		AngleToAim.x = -asinf(Difference.z / magnitude) * 180 / 3.14;
+		AngleToAim.x = -asinf(Difference.z / magnitude) * 180.f / 3.14f;
 
 
 		if (AngleToAim.x > 89)
@@ -50,7 +50,7 @@ public:
 	{
 		float dist;
 
-		dist = sqrt(pow(myViewAngles.x - desViewAngles.x, 2) + pow(myViewAngles.y - desViewAngles.y, 2));
+		dist = (float)sqrt(pow(myViewAngles.x - desViewAngles.x, 2) + pow(myViewAngles.y - desViewAngles.y, 2));
 
 		return dist;
 

@@ -1,8 +1,7 @@
 #pragma once
 #include "Drawing.h"
-#include "SDK/SDK_Utilities.h"
-
 #include "Menu.h"
+#include "SDK/SDK_Utilities.h"
 using namespace std;
 
 namespace Hack {

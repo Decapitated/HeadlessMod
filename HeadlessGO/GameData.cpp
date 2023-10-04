@@ -4,7 +4,7 @@ using Hack::Menu;
 
 DWORD WINAPI DataThread(GameData* gameData);
 
-std::mutex GameData::dataMutex;
+mutex GameData::dataMutex;
 shared_ptr<Hack::GData> GameData::data;
 
 GameData::GameData() {
@@ -86,12 +86,12 @@ DWORD WINAPI DataThread(GameData* gameData) {
 			tempData->closestToCrosshair = closestToCrosshair;
 
 		{
-			const std::lock_guard<std::mutex> lock(GameData::dataMutex);
+			const lock_guard<mutex> lock(GameData::dataMutex);
 			GameData::data = tempData;
 		}
 
 		Sleep(100); // Sleep since we don't do much in this thread.
 	}
-	std::cout << "End Data Thread." << std::endl;
+	cout << "End Data Thread." << endl;
 	return 0;
 }

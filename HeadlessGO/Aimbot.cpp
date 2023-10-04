@@ -25,13 +25,13 @@ Aimbot::Aimbot()
     memcpy(vt_clientShared, *reinterpret_cast<void***>(clientModeShared), sizeof(vt_clientShared));
 
     // Create a hook for CreateMove.
-    std::cout << "Creating aimbot hook." << std::endl;
+    cout << "Creating aimbot hook." << endl;
     #pragma warning(disable : 26812)
     if (MH_CreateHook((LPVOID)vt_clientShared[21], &CreateMoveFn, reinterpret_cast<LPVOID*>(&oCreateMove)) != MH_OK)
         throw "Failed to create aimbot hook";
 
     // Enable the hook for CreateMove.
-    std::cout << "Enabling aimbot hook." << std::endl;
+    cout << "Enabling aimbot hook." << endl;
     if (MH_EnableHook((LPVOID)vt_clientShared[21]) != MH_OK)  throw "Failed to enable aimbot hook";
 }
 
@@ -55,7 +55,7 @@ Aimbot::~Aimbot()
             // Mouse side buttons.
             if (GetAsyncKeyState(VK_XBUTTON1) || GetAsyncKeyState(VK_XBUTTON2))
             {
-                const std::lock_guard<std::mutex> lock(GameData::dataMutex);
+                const lock_guard<mutex> lock(GameData::dataMutex);
                 shared_ptr<Hack::GData> data = GameData::data;
 
                 Hack::Player localPlayer = data->players->at(data->localPlayerIndex);
@@ -70,10 +70,10 @@ Aimbot::~Aimbot()
                     float dist = diff_x + diff_y;
 
                     if (dist <= Menu::vAimbotFOV) {
-                        float norm_dist = SDK_Utilities::Math::NormalizeValue(0, Menu::vAimbotFOV, dist);
+                        float norm_dist = SDK_Utilities::Math::NormalizeValue(0, (float)Menu::vAimbotFOV, dist);
                         // Ease
                         //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
-                        float smooth = Menu::vAimbotSmoothing;
+                        float smooth = (float)Menu::vAimbotSmoothing;
 
                         cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1.0f));
                         cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1.0f));
@@ -93,10 +93,10 @@ Aimbot::~Aimbot()
         float c2 = c1 * 1.525f;
 
         if (x < 0.5) {
-            return (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2;
+            return (float)(pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2;
         }
         else {
-            return (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+            return (float)(pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
         }
     }
     
@@ -119,7 +119,7 @@ Aimbot::~Aimbot()
     }
 
     float easeOutQuart(float x) {
-        return 1 - pow(1 - x, 4);
+        return 1 - (float)pow(1 - x, 4);
     }
 
     float easeInOutExpo(float x) {
@@ -130,14 +130,14 @@ Aimbot::~Aimbot()
             return 1;
         }
         else if (x < 0.5f) {
-            return pow(2, 20 * x - 10) / 2;
+            return (float)pow(2, 20 * x - 10) / 2;
         }
         else {
-            return (2 - pow(2, -20 * x + 10)) / 2;
+            return (float)(2 - pow(2, -20 * x + 10)) / 2;
         }
     }
 
     float easeInOutSine(float x) {
-        return -(cos(3.1415926535897932384626433832795 * x) - 1) / 2;
+        return (float)-(cos(3.1415926535897932384626433832795 * x) - 1) / 2;
     }
 #pragma endregion

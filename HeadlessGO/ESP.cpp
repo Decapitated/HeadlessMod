@@ -1,6 +1,7 @@
 #include "ESP.h"
 using Hack::ESP;
-#include <vector>
+using Hack::Menu;
+using Hack::Drawing;
 
 void ESP::Render()
 {
@@ -38,9 +39,9 @@ void ESP::Render()
 	// Draw croshair last so it's always on top.
 	if (Menu::bCrosshair)
 		DrawCrosshair(
-			Menu::vCrosshairWidth,                   // Width
-			Menu::vCrosshairHeight,                  // Height
-			Menu::vCrosshairOffset,                  // Offset
+			(int)Menu::vCrosshairWidth,                   // Width
+			(int)Menu::vCrosshairHeight,                  // Height
+			(int)Menu::vCrosshairOffset,                  // Offset
 			Menu::ToColor(&Menu::cCrosshair),        // Main Color
 			Menu::vCrosshairRounding,                // Rounding
 			Menu::bCrosshairOutline,                 // Outline?
@@ -60,7 +61,7 @@ void ESP::Render()
 		{
 			int w, h;
 			SourceInterfaces::pEngine->GetScreenSize(w, h);
-			Drawing::Line(WorldToScreenEnt.x, WorldToScreenEnt.y, w / 2, h, color, 1.f);
+			Drawing::Line(WorldToScreenEnt.x, WorldToScreenEnt.y, w / 2.f, (float)h, color, 1.f);
 		}
 	}
 
@@ -71,10 +72,10 @@ void ESP::Render()
 		if (boneIndex != -1)
 		{
 			Vector bonePos = SDK_Utilities::GetBonePos(CurrentEnt, boneIndex);
-			bonePos.z = bonePos.z + 2.0;
+			bonePos.z = bonePos.z + 2.f;
 
 			float distance = SDKMath::GetDistanceBetween(SDK_Utilities::GetLocalPlayer()->GetOrigin(), bonePos);
-			float offset = 3000.0 / distance;
+			float offset = 3000.0f / distance;
 
 			Vector w_bonePos;
 			if (SDKMath::WorldToScreen(bonePos, w_bonePos))
@@ -139,30 +140,30 @@ void ESP::Render()
 		{
 			Drawing::OutlinedFilledBox(
 				x - width / 2.f, y - offset - length, // X, Y
-				width, length, color, outlineColor, outlineThickness, rounding);
+				(float)width, (float)length, color, outlineColor, outlineThickness, rounding);
 			Drawing::OutlinedFilledBox(
 				x + offset, y - width / 2.f,
-				length, width, color, outlineColor, outlineThickness, rounding);
+				(float)length, (float)width, color, outlineColor, outlineThickness, rounding);
 			Drawing::OutlinedFilledBox(
 				x - width / 2.f, y + offset,
-				width, length, color, outlineColor, outlineThickness, rounding);
+				(float)width, (float)length, color, outlineColor, outlineThickness, rounding);
 			Drawing::OutlinedFilledBox(x - offset - length, y - width / 2.f,
-				length, width, color, outlineColor, outlineThickness, rounding);
+				(float)length, (float)width, color, outlineColor, outlineThickness, rounding);
 		}
 		else
 		{
 			Drawing::BoxFilled(
 				x - width / 2.f, y - offset - length, // X, Y
-				width, length, color, rounding);
+				(float)width, (float)length, color, rounding);
 			Drawing::BoxFilled(
 				x + offset, y - width / 2.f,
-				length, width, color, rounding);
+				(float)length, (float)width, color, rounding);
 			Drawing::BoxFilled(
 				x - width / 2.f, y + offset,
-				width, length, color, rounding);
+				(float)width, (float)length, color, rounding);
 			Drawing::BoxFilled(
 				x - offset - length, y - width / 2.f,
-				length, width, color, rounding);
+				(float)length, (float)width, color, rounding);
 		}
 	}
 
@@ -215,6 +216,6 @@ void ESP::Render()
 
 		float x = w / 2.f, y = h / 2.f;
 
-		Drawing::Circle(x, y, FOV*15, Menu::ToColor(&Menu::cCrosshair));
+		Drawing::Circle(x, y, (float)FOV*15, Menu::ToColor(&Menu::cCrosshair));
 	}
 #pragma endregion
