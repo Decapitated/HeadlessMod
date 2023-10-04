@@ -16,7 +16,7 @@ namespace Hack {
 		Vector headPos;
 		float distToCrosshair;
 	};
-	typedef std::unordered_map<int, Player> PlayerList;
+	typedef unordered_map<int, Player> PlayerList;
 	struct GData {
 		RECT screenSize;
 		int localPlayerIndex = -1;
@@ -30,7 +30,7 @@ namespace Hack {
 		HANDLE dataThreadHandle;
 
 	public:
-		static std::mutex dataMutex;
+		static mutex dataMutex;
 		static shared_ptr<GData> data;
 		GameData();
 		~GameData();

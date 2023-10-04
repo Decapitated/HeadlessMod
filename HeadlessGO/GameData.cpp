@@ -5,7 +5,7 @@ using Hack::Menu;
 DWORD WINAPI DataThread(GameData* gameData);
 
 mutex GameData::dataMutex;
-shared_ptr<Hack::GData> GameData::data;
+shared_ptr<Hack::GData> GameData::data(nullptr);
 
 GameData::GameData() {
 	dataThreadHandle = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)DataThread, this, 0, nullptr);
