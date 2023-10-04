@@ -48,37 +48,42 @@ Aimbot::~Aimbot()
         if (!cmd->m_cmd_nr)
             return oCreateMove(ecx, SampleTime, cmd);
 
-        if (Menu::bAimbot &&
-            SourceInterfaces::pEngine->IsInGame() &&
-            SourceInterfaces::pEngine->IsConnected())
+        if (Menu::bAimbot)
         {
-            // Mouse side buttons.
-            if (GetAsyncKeyState(VK_XBUTTON1) || GetAsyncKeyState(VK_XBUTTON2))
+            if (SourceInterfaces::pEngine && SourceInterfaces::pEngine->IsInGame() &&
+                SourceInterfaces::pEngine->IsConnected() &&
+                !SourceInterfaces::pEngine->IsDrawingLoadingImage())
             {
-                const lock_guard<mutex> lock(GameData::dataMutex);
-                shared_ptr<Hack::GData> data = GameData::data;
-
-                if (data)
+                // Mouse side buttons.
+                if (GetAsyncKeyState(VK_XBUTTON1) || GetAsyncKeyState(VK_XBUTTON2))
                 {
-                    Hack::Player localPlayer = data->players->at(data->localPlayerIndex);
+                    shared_ptr<Hack::GData> data;
+                    {
+                        const lock_guard<mutex> lock(GameData::dataMutex);
+                        data = GameData::data;
+                    }
+                    if (data)
+                    {
+                        Hack::Player localPlayer = data->players->at(data->localPlayerIndex);
 
-                    if (data->closestToCrosshair != -1) {
-                        Hack::Player targetPlayer = data->players->at(data->closestToCrosshair);
-                        QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPlayer.headPos, targetPlayer.headPos);
-                        QAngle diffs = aimAngle - QAngle{ cmd->m_viewangles.x, cmd->m_viewangles.y, cmd->m_viewangles.z };
-                        float diff_x = diffs.x, diff_y = diffs.y;
-                        if (diff_x < 0) diff_x *= -1;
-                        if (diff_y < 0) diff_y *= -1;
-                        float dist = diff_x + diff_y;
+                        if (data->closestToCrosshair != -1) {
+                            Hack::Player targetPlayer = data->players->at(data->closestToCrosshair);
+                            QAngle aimAngle = SDK_Utilities::Math::GetAngle(localPlayer.headPos, targetPlayer.headPos);
+                            QAngle diffs = aimAngle - QAngle{ cmd->m_viewangles.x, cmd->m_viewangles.y, cmd->m_viewangles.z };
+                            float diff_x = diffs.x, diff_y = diffs.y;
+                            if (diff_x < 0) diff_x *= -1;
+                            if (diff_y < 0) diff_y *= -1;
+                            float dist = diff_x + diff_y;
 
-                        if (dist <= Menu::vAimbotFOV) {
-                            float norm_dist = SDK_Utilities::Math::NormalizeValue(0, (float)Menu::vAimbotFOV, dist);
-                            // Ease
-                            //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
-                            float smooth = (float)Menu::vAimbotSmoothing;
+                            if (dist <= Menu::vAimbotFOV) {
+                                float norm_dist = SDK_Utilities::Math::NormalizeValue(0, (float)Menu::vAimbotFOV, dist);
+                                // Ease
+                                //float smooth = ((Menu::vAimbotSmoothing - 1) * ease(norm_dist)) + 1;
+                                float smooth = (float)Menu::vAimbotSmoothing;
 
-                            cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1.0f));
-                            cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1.0f));
+                                cmd->m_viewangles.x = cmd->m_viewangles.x + (diffs.x / max(smooth, 1.0f));
+                                cmd->m_viewangles.y = cmd->m_viewangles.y + (diffs.y / max(smooth, 1.0f));
+                            }
                         }
                     }
                 }

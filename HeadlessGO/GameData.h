@@ -14,7 +14,7 @@ namespace Hack {
 		Vector originPos;
 		bool hasHead = false;
 		Vector headPos;
-		float distToCrosshair;
+		float distToCrosshair = -1;
 	};
 	typedef unordered_map<int, Player> PlayerList;
 	struct GData {

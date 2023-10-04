@@ -79,7 +79,7 @@ DWORD WINAPI DataThread(GameData* gameData) {
 				distance = tempPlayer.distToCrosshair;
 			}
 
-			tempData->players->insert({index, tempPlayer});
+			tempData->players->insert({ index, tempPlayer });
 		}
 
 		if (closestToCrosshair != -1)
@@ -87,9 +87,9 @@ DWORD WINAPI DataThread(GameData* gameData) {
 
 		{
 			const lock_guard<mutex> lock(GameData::dataMutex);
-			GameData::data = tempData;
+			GameData::data.swap(tempData);
 		}
-
+		
 		Sleep(100); // Sleep since we don't do much in this thread.
 	}
 	cout << "End Data Thread." << endl;
